@@ -7,6 +7,11 @@
   * @return The output of this action, which must be a JSON object.
   *
   */
+ const md5 = require('spark-md5');
+
  function main(params) {
-	return { message: 'Hello World' };
-}
+   return {
+     entries: params.rows.map((row) => { return {
+       name: row.doc.name  }})
+   };
+ }
