@@ -37,7 +37,7 @@ def analyze_review_sentiments(dealerreview):
     # params["return_analyzed_text"] = kwargs["return_analyzed_text"]
     response = requests.get("https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/daa0c140-e05d-470e-9580-db100c12b5e0",
                              params=params, headers={'Content-Type': 'application/json'},
-                                    auth=HTTPBasicAuth('apikey', "xWl_MwcjWkE6orrnQQshSV7MYTbgJp96X58S1IwsMri9"))
+                                    auth=HTTPBasicAuth('apikey', ""))
     return response
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function

@@ -1,4 +1,5 @@
 # from Proj.CloudAppDev.server.djangoapp.restapis import get_dealer_by_id, get_dealers_from_cf
+from requests.api import get, post
 from . import restapis
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
@@ -88,17 +89,35 @@ def get_dealerships(request):
         url = "https://ce328930.us-south.apigw.appdomain.cloud/api/dealership"
         # Get dealers from the URL
         dealerships = restapis.get_dealers_from_cf(url)
-        context=dict()
-        # context=dealerships
-        dealer_names_json = '"}, {"full_name": "'.join([dealer.full_name for dealer in dealerships])
-        dealer_names_json='{"full_name":"'+dealer_names_json+'"}'
-        dealer_names_full='{"data"'+': ['+dealer_names_json+']}'
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # print(dealerships)
+        # type 1
+        # dealer_names_json = '"}, {"full_name": "'.join([dealer.full_name for dealer in dealerships])
+        # dealer_names_json='{"full_name":"'+dealer_names_json+'"}'
+        # dealer_names_full='{"data"'+': ['+dealer_names_json+']}'
 
         # render_to_string('djangoapp/index.html', dealer_names_json)
+        list=[]
+        context={}
+        for i in dealerships:
+            print(i)
+            dealer={"id": str(i.id), "name":i.short_name, "state":i.st}
+            list.append(dealer)
+            # dealer=dealer+","+dealer
+            # dealer_details_json='{"full_name":"'+dealer_names_json+'"}'
+            # dealer_names_full='{"data"'+': ['+dealer_names_json+']}'
+            # context["dealer"]=i.id 
+            # context["name"]=i.short_name
+            # context["state"]=i.st
 
-        # dealer_names=', '.join([dealer.full_name for dealer in dealerships])
-        # dealer_names='{"data":"'+dealer_names+'"}'
-        # print(dealer_names)
+        # context["key1"] = ["data"]
+        # dealer_names=', '.join([dealer.short_name for dealer in dealerships])
+        # dealer_names=dealer_names+', '.join([dealer.st for dealer in dealerships])
+        # dealer_names='['+dealer_names+']'
+        # print(list)
+        context["dealership_list"]=list
+        # context["data"]= dealerships
+        print(context)
         # context=dealer_names
 
         # json.loads(json.dumps([dict1, dict2]))
@@ -106,7 +125,7 @@ def get_dealerships(request):
         # Return a list of dealer short name
         # context = json.loads(dealer_names_full)
         # return HttpResponse(dealer_names)
-        return render(request, 'djangoapp/index.html', dealer_names_full)
+        return render(request, 'djangoapp/index.html', context)
 
 
 
@@ -114,13 +133,12 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         url = "https://ce328930.us-south.apigw.appdomain.cloud/api/review"
-        # Get dealers from the URL
-        #get dealers by id
         reviews= restapis.get_dealer_reviews_from_cf(url, dealer_id)
-        # Concat all dealer's short name
         # review_names = ', '.join([review.name for review in reviews])
-        # Return a list of dealer short name
         return HttpResponse(reviews) 
+        # context ={}
+        # context["data"]= reviews
+        # render(request, 'djangoapp/dealer_details.html', context)
 # ...
 
 # Create a `add_review` view to submit a review
@@ -133,8 +151,12 @@ def add_review(request, dealer_id):
     review["review"] = "This is a great car dealer"
     json_payload["review"] = review
     url = "https://ce328930.us-south.apigw.appdomain.cloud/api/review"
+    if request.method ==get:
+        output=restapis.get_dealer_reviews_from_cf(url, dealerId=dealer_id)
+        return HttpResponse(output) 
 
-    restapis.post_request(url, json_payload, dealerId=dealer_id)
+    if request.method ==post:
+        restapis.post_request(url, json_payload, dealerId=dealer_id)
 # ...
 def get_dealer_id(request,dealer_id):
     print(request)
