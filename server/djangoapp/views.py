@@ -1,4 +1,5 @@
-from Proj.CloudAppDev.server.djangoapp.restapis import get_dealers_from_cf
+# from Proj.CloudAppDev.server.djangoapp.restapis import get_dealer_by_id, get_dealers_from_cf
+from . import restapis
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
@@ -10,6 +11,7 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from django.template.loader import render_to_string
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -81,28 +83,67 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    def get_dealerships(request):
-        if request.method == "GET":
-            url = "your-cloud-function-domain/dealerships/dealer-get"
-            # Get dealers from the URL
-            dealerships = get_dealers_from_cf(url)
-            # Concat all dealer's short name
-            dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-            # Return a list of dealer short name
-            return HttpResponse(dealer_names)
+    
+    if request.method == "GET":
+        url = "https://ce328930.us-south.apigw.appdomain.cloud/api/dealership"
+        # Get dealers from the URL
+        dealerships = restapis.get_dealers_from_cf(url)
+        context=dict()
+        # context=dealerships
+        dealer_names_json = '"}, {"full_name": "'.join([dealer.full_name for dealer in dealerships])
+        dealer_names_json='{"full_name":"'+dealer_names_json+'"}'
+        dealer_names_full='{"data"'+': ['+dealer_names_json+']}'
 
+        # render_to_string('djangoapp/index.html', dealer_names_json)
 
+        # dealer_names=', '.join([dealer.full_name for dealer in dealerships])
+        # dealer_names='{"data":"'+dealer_names+'"}'
+        # print(dealer_names)
+        # context=dealer_names
 
-    # context = {}
-    # # if request.method == "GET":
-    # return render(request, 'djangoapp/index.html', context)
+        # json.loads(json.dumps([dict1, dict2]))
+        # context= {'name': dealerships}
+        # Return a list of dealer short name
+        # context = json.loads(dealer_names_full)
+        # return HttpResponse(dealer_names)
+        return render(request, 'djangoapp/index.html', dealer_names_full)
+
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
+def get_dealer_details(request, dealer_id):
+    if request.method == "GET":
+        url = "https://ce328930.us-south.apigw.appdomain.cloud/api/review"
+        # Get dealers from the URL
+        #get dealers by id
+        reviews= restapis.get_dealer_reviews_from_cf(url, dealer_id)
+        # Concat all dealer's short name
+        # review_names = ', '.join([review.name for review in reviews])
+        # Return a list of dealer short name
+        return HttpResponse(reviews) 
 # ...
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
+def add_review(request, dealer_id):
+    review=[]
+    json_payload=[]
+    review["request"]=request
+    review["time"] = datetime.utcnow().isoformat()
+    review["dealership"] = 11
+    review["review"] = "This is a great car dealer"
+    json_payload["review"] = review
+    url = "https://ce328930.us-south.apigw.appdomain.cloud/api/review"
+
+    restapis.post_request(url, json_payload, dealerId=dealer_id)
 # ...
+def get_dealer_id(request,dealer_id):
+    print(request)
+    if request.method == "GET":
+        url = "https://ce328930.us-south.apigw.appdomain.cloud/api/review"
+        reviews = restapis.get_dealer_by_id(url,dealer_id)
+        # Concat all dealer's short name
+        # review_names = ', '.join([review.name for review in reviews])
+        # Return a list of dealer short name
+        return HttpResponse(reviews) 
+
 

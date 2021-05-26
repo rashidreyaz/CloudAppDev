@@ -10,11 +10,11 @@ from django.utils.timezone import now
 # - __str__ method to print a car make object
 
 class CarMake(models.Model):
-    name = models.CharField(null=False, max_length=30, default='Tesla', editable=False)
-    description = models.CharField(max_length=1000)
+    name = models.CharField(null=False, max_length=30, default='')
+    description = models.CharField(max_length=1000,default='')
     def __str__(self):
-        return "name: " + self.name + "," + \
-               "Description: " + self.description
+        return  "Name: " + self.name + "," + \
+                "Description: " + self.description
 
 # carmake = models.ForeignKey(CarMake, on_delete=models.CASCADE)
 
@@ -35,18 +35,19 @@ class CarModel(models.Model):
             (WAGON , 'wagon')]
     carmake = models.ForeignKey(CarMake, on_delete=models.CASCADE)
     # carmake = models.ManyToManyField(CarMake)
-    modelname = models.CharField(null=False, max_length=30, default='Tesla model S')
     dealer_id= models.IntegerField(null=False,  default=1)
+    modelname = models.CharField(null=False, max_length=30, default='')
     type = models.CharField(max_length=5, choices=TYPES, default=SEDAN)
     year =models.DateField(default=now)
     def __str__(self):
-        return  "modelname: " + self.modelname + "," + \
-                "CarMake: " + self.carmake+ ","+\
-                "Dealer: " + self.dealer_id + "," + \
-                "Type: " + self.type + "," + \
-                "Year: "+ self.year
+        return  "modelname:" + self.modelname + "," + \
+                "Type: " + self.type 
 
 
+                # + "," + \
+                # "Year: "+ self.year
+                # "Dealer: " + self.dealer_id + "," + \
+                # "CarMake: " + self.carmake+ ","+\
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
 
@@ -71,11 +72,33 @@ class CarDealer:
         self.zip = zip
 
     def __str__(self):
-        return "Dealer name: " + self.full_name
+        return "Dealer_name: " + self.full_name + "," + \
+            "Dealer_id: " + str(self.id)
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
 # class DealerReview(models.Model):
-# class DealerReview(models.Model):
-#     name = models.CharField(null=False, max_length=30, default='Best')
-#     def __str__(self):
-#         return  "DealerReview: " + self.name
+class DealerReview(models.Model):
+    # car_make = models.CharField(null=False, max_length=30, default='Best')
+    def __init__(self, car_make, car_model, car_year, dealership, id, name, purchase, purchase_date, review):
+        self.car_make = car_make
+        # Dealer city
+        self.car_model = car_model
+        # Dealer Full Name
+        self.car_year = car_year
+        # Dealer Full Name
+        self.dealership = dealership
+        # Dealer id
+        self.id = id
+        # Location lat
+        self.name = name
+        # Location long
+        self.purchase = purchase
+        # Dealer short name
+        self.purchase_date = purchase_date
+        # Dealer state
+        self.review = review
+
+    def __str__(self):
+        return  "Dealer_Name: " + self.name + "," + \
+             "Dealer_Review: " + self.review + "," + \
+            "Dealer_id: " + str(self.id)

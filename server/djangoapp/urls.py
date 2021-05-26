@@ -6,7 +6,6 @@ from . import views
 app_name = 'djangoapp'
 urlpatterns = [
     # route is a string contains a URL pattern
-    path(route='', view=views.get_dealerships, name='index'),
     # view refers to the view function
     # name the URL
 
@@ -24,7 +23,10 @@ urlpatterns = [
     path(route='logout/', view=views.logout_request, name='logout'),
 
     # path for dealer reviews view
-    
+    path(route='', view=views.get_dealerships, name='dealers'),
+    path('review/<int:dealer_id>/', views.get_dealer_details, name='review_details'),
+    path('dealer/<int:dealer_id>/', views.get_dealer_id, name='dealer_details'),
     # path for add a review view
+    path('postreview/<int:dealer_id>/', views.get_dealer_details, name='post_reviews')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
