@@ -11,6 +11,36 @@
 
 </head>
     <body>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'djangoapp:dealers' %}">Home</a>
+                    <a class="navbar-brand" href="{% url 'djangoapp:about' %}">About Us</a>
+                    <a class="navbar-brand" href="{% url 'djangoapp:contact' %}">Contact</a>
+                
+                    <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Username" name="username" >
+                                <input type="password" class="form-control" placeholder="Username" name="psw" >
+                                <button class="btn btn-primary" type="submit">Login</button>
+                                <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                            </div>
+                        </form>
+                    </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>    
+        </nav>
         <form>
             <textarea class="form-control" id="content" name="content" rows="2" required></textarea> 
             <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">

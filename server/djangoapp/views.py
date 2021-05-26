@@ -115,15 +115,9 @@ def get_dealerships(request):
         # dealer_names=dealer_names+', '.join([dealer.st for dealer in dealerships])
         # dealer_names='['+dealer_names+']'
         # print(list)
-        context["dealership_list"]=list
-        # context["data"]= dealerships
-        print(context)
-        # context=dealer_names
 
-        # json.loads(json.dumps([dict1, dict2]))
-        # context= {'name': dealerships}
-        # Return a list of dealer short name
-        # context = json.loads(dealer_names_full)
+        context["dealership_list"]=list
+        print(context)
         # return HttpResponse(dealer_names)
         return render(request, 'djangoapp/index.html', context)
 
@@ -135,11 +129,21 @@ def get_dealer_details(request, dealer_id):
         url = "https://ce328930.us-south.apigw.appdomain.cloud/api/review"
         reviews= restapis.get_dealer_reviews_from_cf(url, dealer_id)
         # review_names = ', '.join([review.name for review in reviews])
-        return HttpResponse(reviews) 
-        # context ={}
-        # context["data"]= reviews
-        # render(request, 'djangoapp/dealer_details.html', context)
-# ...
+        # return HttpResponse(reviews) 
+        # list=[]
+        context={}
+        # print(reviews.Dealer_Name) wrong
+        for j in reviews:
+            review_out={"id": j.id, "name":j.name, "review":j.review}
+ 
+        # review={"id": reviews.id, "name":reviews.name, "review":reviews.review}
+        # print(review_out)
+        # context["data"]= dealerships
+        context["review_list"]=review_out
+        print(context)
+        # return HttpResponse(reviews)
+        return render(request, 'djangoapp/dealer_details.html', context)
+
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):

@@ -8,20 +8,20 @@
 </head>
 
     <body>
-
-        <nav>
-            <div>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
                 <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'djangoapp:dealers' %}">Home</a>
                     <a class="navbar-brand" href="{% url 'djangoapp:about' %}">About Us</a>
-                </div>
-                <div class="navbar-header">
                     <a class="navbar-brand" href="{% url 'djangoapp:contact' %}">Contact</a>
-                </div>
-                <ul class="nav navbar-nav navbar-right">
+                
+                    <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                     <li>
+                        <a class="btn btn-link" href="{% url 'djangoapp:dealers' %}">Dealership</a>
                         <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                        <a class="btn btn-link" href="{% url 'djangoapp:get_reviews' %}">Reviews</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+               
                     </li>
                     {% else %}
                     <li>
@@ -35,20 +35,43 @@
                             </div>
                         </form>
                     </li>
-                    {% endif %}
-                </ul>
-            </div>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>    
         </nav>
-
+        
         <div class="card-columns">
+            <!-- {% for review in review_list %} -->
             <div class="card">
                 <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png">
                 <div class="card-body">
-                    <card-title>Card Test</card-title>
+                    <card-title>{{review_list.name}}</card-title>
+                </br>
+                    <card-body>Review -> {{review_list.review}}</card-body>
                 </div>
             </div>
+            <!-- {% endfor %} -->
         </div>
-
+ 
+        <!-- <table class="table" id="table" data-filter-control="true">
+            <thead>
+                <tr>
+                    <th data-field="id">ID</th>
+                    <th data-field="name">Name</th>  
+                    <th data-field="review" data-filter-control="select">review</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in review_list %}
+                <tr>
+                    <td>{{review_list.id}}</td>
+                    <td>{{review_list.name}}</td>
+                    <td>{{review_list.review}}</td>
+                </tr>
+                {% endfor %} 
+            </tbody>
+        </table> -->
     </body>
 
 </html>

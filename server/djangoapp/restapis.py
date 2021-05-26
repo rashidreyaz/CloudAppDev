@@ -86,8 +86,8 @@ def get_dealer_reviews_from_cf(url, dealerId, **kwargs):
             # print(dealerid)
             if(reviewid==dealerId):
                 results.append(review_obj)
-                review_obj.sentiment = analyze_review_sentiments(review_obj.review)
-                results.append(review_obj.sentiment)
+                # review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+                # results.append(review_obj.sentiment)
 
     return results  
 
